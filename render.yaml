@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: ai-cctv-attendance
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: MODELS_DIR
+        value: /app/data/models
+      - key: FACES_DIR
+        value: /app/data/faces
+      - key: DATABASE_URL
+        value: /app/data/attendance.db
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 1

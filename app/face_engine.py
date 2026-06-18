@@ -23,7 +23,7 @@ import numpy as np
 
 from app.config import settings
 
-MODELS_DIR = os.path.join(settings.data_dir, "models")
+MODELS_DIR = settings.models_dir
 
 _DETECTOR_FILE = "face_detection_yunet_2023mar.onnx"
 _RECOGNIZER_FILE = "face_recognition_sface_2021dec.onnx"

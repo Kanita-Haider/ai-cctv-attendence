@@ -8,6 +8,7 @@ from app.config import settings
 
 # Ensure storage directories exist before SQLite tries to create the file.
 os.makedirs(settings.data_dir, exist_ok=True)
+os.makedirs(settings.models_dir, exist_ok=True)
 os.makedirs(settings.faces_dir, exist_ok=True)
 
 connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monipur High School — Attendance</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="header-brand">
+      <span class="school-icon">🏫</span>
+      <div>
+        <h1>Monipur High School</h1>
+        <div class="school-sub">AI-Powered Student Attendance System</div>
+      </div>
+    </div>
+    <div id="status" class="status">
+      <span class="dot" id="dot-camera"></span> Camera
+      <span class="dot" id="dot-model"></span> Model
+      <span id="status-text" class="muted"></span>
+    </div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="live">Live View</button>
+    <button class="tab" data-tab="attendance">Attendance</button>
+    <button class="tab" data-tab="enroll">Enroll Student</button>
+    <button class="tab" data-tab="students">Students</button>
+    <button class="tab" data-tab="analytics">Analytics</button>
+  </nav>
+
+  <!-- ============ LIVE ============ -->
+  <section id="live" class="panel active">
+    <div class="live-grid">
+      <div class="webcam-container">
+        <div class="webcam-wrap" id="webcam-wrap">
+          <video id="webcam" autoplay playsinline muted></video>
+          <canvas id="overlay"></canvas>
+        </div>
+        <div id="webcam-denied" class="webcam-msg" style="display:none">
+          <span>📷</span>
+          <p>Camera access was denied.<br>Allow camera permissions in your browser and refresh the page.</p>
+        </div>
+        <div id="webcam-waiting" class="webcam-msg">
+          <span>⏳</span>
+          <p>Requesting camera access…</p>
+        </div>
+        <!-- hidden canvas used only for frame capture -->
+        <canvas id="capture-canvas" style="display:none"></canvas>
+      </div>
+      <div class="events">
+        <h3>Recent recognitions</h3>
+        <ul id="event-list"><li class="muted">Waiting for activity…</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ATTENDANCE ============ -->
+  <section id="attendance" class="panel">
+    <div class="row">
+      <label>Date <input type="date" id="att-date" /></label>
+      <button id="att-refresh">Refresh</button>
+      <a id="att-export" class="btn-link" href="#">⬇ Export CSV</a>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Student ID</th><th>Name</th><th>Class</th><th>Check In</th><th>Check Out</th><th>Status</th></tr>
+      </thead>
+      <tbody id="att-body"><tr><td colspan="6" class="muted">No records.</td></tr></tbody>
+    </table>
+  </section>
+
+  <!-- ============ ENROLL ============ -->
+  <section id="enroll" class="panel">
+    <h3>Enroll a new student</h3>
+    <form id="enroll-form" class="form">
+      <label>Student ID / Roll No. <input name="student_id" required /></label>
+      <label>Full name <input name="name" required /></label>
+      <label>Class &amp; Section <input name="class_section" placeholder="e.g. Class 9A" /></label>
+      <label>Parent email <input name="email" type="email" /></label>
+      <label>Date of birth <input name="date_of_birth" type="date" /></label>
+      <label>Face photo(s) — clear, front-facing
+        <input name="images" type="file" accept="image/*" multiple required />
+      </label>
+      <button type="submit">Enroll Student</button>
+      <p id="enroll-msg" class="msg"></p>
+    </form>
+  </section>
+
+  <!-- ============ STUDENTS ============ -->
+  <section id="students" class="panel">
+    <div class="row">
+      <h3>Enrolled students</h3>
+      <button id="stu-refresh">Refresh</button>
+    </div>
+    <table>
+      <thead>
+        <tr><th>Student ID</th><th>Name</th><th>Class</th><th>Age</th><th>Faces</th><th></th></tr>
+      </thead>
+      <tbody id="stu-body"><tr><td colspan="6" class="muted">None yet.</td></tr></tbody>
+    </table>
+  </section>
+
+  <!-- ============ ANALYTICS ============ -->
+  <section id="analytics" class="panel">
+    <div class="analytics-cards" id="summary-cards">
+      <div class="card">
+        <div class="card-label">Total Students</div>
+        <div class="card-value" id="kpi-total">—</div>
+      </div>
+      <div class="card card-present">
+        <div class="card-label">Present Today</div>
+        <div class="card-value" id="kpi-present">—</div>
+      </div>
+      <div class="card card-late">
+        <div class="card-label">Late Today</div>
+        <div class="card-value" id="kpi-late">—</div>
+      </div>
+      <div class="card card-absent">
+        <div class="card-label">Absent Today</div>
+        <div class="card-value" id="kpi-absent">—</div>
+      </div>
+    </div>
+
+    <div class="charts-row">
+      <div class="chart-box chart-box-wide">
+        <h3>Daily Attendance — Last 14 Days</h3>
+        <canvas id="chart-daily"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>On-Time vs Late (Today)</h3>
+        <canvas id="chart-donut"></canvas>
+        <div id="donut-legend" class="donut-legend"></div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:28px">Student Attendance Ranking <span class="muted" style="font-size:13px;font-weight:400">(last 30 days)</span></h3>
+    <table>
+      <thead>
+        <tr><th>#</th><th>Name</th><th>Class</th><th>Days Present</th><th>On-Time</th><th>Late</th><th>Rate</th></tr>
+      </thead>
+      <tbody id="ranking-body"><tr><td colspan="7" class="muted">Loading…</td></tr></tbody>
+    </table>
+  </section>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

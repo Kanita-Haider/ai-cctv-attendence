@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+
+# Environment secrets
+.env
+
+# Database
+data/attendance.db
+
+# Enrolled face images (personal data)
+data/faces/
+
+# Large ONNX model binaries (auto-downloaded on first run)
+data/models/*.onnx
+
+# Legacy InsightFace cache
+.insightface/

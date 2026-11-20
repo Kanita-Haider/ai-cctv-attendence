@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
     # Application
-    app_name: str = "Monipur High School Attendance"
+    app_name: str = "School Attendance"
     database_url: str = "sqlite:///./data/attendance.db"
 
     # Camera
